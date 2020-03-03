@@ -39,4 +39,7 @@ imgPath<- test_data[,c(1,2,22)]
 imgPathJSON<-toJSON(imgPath,pretty=TRUE)
 write_json(imgPathJSON,"data/imgPath.json")
 
+imgCat<-test_data[,c(1,2,17)]
+write.csv(imgCat,"data/imgCat.csv",row.names=FALSE)
+
 ##file.copy(test_data$pathtofile,'P:/Projects/GitHub_Prj/streamConnectViz/images')

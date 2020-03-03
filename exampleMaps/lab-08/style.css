@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: rgb(43, 43, 43);
+    font-family: "Lato", sans-serif;
+    font-size: 100%;
+    font-weight: 300;
+    color: rgb(172, 172, 172);
+}
+
+header, footer, section {
+    padding: 6px 10%;
+    margin: 0 auto;
+    width: 80%
+}
+
+h1 {
+    display: inline-block;
+    margin-right: 20px;
+    color: rgb(190, 190, 190);
+    font-size: 3.5em;
+    font-weight: 700;
+}
+
+h2 {
+    display: inline-block;
+    color: rgba(255, 200, 0, 0.8);
+    letter-spacing: 0.05em;
+    margin-top: 0px;
+    font-weight: 300;
+    text-transform: uppercase;
+    border-bottom: 1px dotted rgba(255, 200, 0, 0.5);;
+}
+
+#map {
+    width: 80%;
+    height: 540px;
+    margin: 10px auto;
+}
+
+p {
+    font-size: 1em;
+    color:rgba(170, 170, 170);;
+    font-weight: 300;
+    font-size: 1.2em;
+}
