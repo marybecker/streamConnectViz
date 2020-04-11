@@ -3,10 +3,33 @@ setwd("/home/mkozlak/Documents/Projects/GitHub/streamConnectViz")
 library(stringr)
 library(jsonlite)
 library(rgdal)
+library(lubridate)
 
 obs<-read.csv("data/TrailCam_FlowObs2017.csv",header=TRUE,stringsAsFactors = FALSE)
-files<-read.csv("data/imgfiles2017_attributeinfo.csv",header=TRUE,stringsAsFactors=FALSE)
 siteLocation<-read.csv("data/sites.csv",header=TRUE)
+colnames(siteLocation)<-c("STA_SEQ","Station_Name","Ylat","Xlong")
+obs<-obs[obs$STA_SEQ %in% siteLocation$STA_SEQ,]
+obs$Date<-mdy(obs$Date)
+
+#Check to see what dates are missing observations
+ndate<-aggregate(obs$STA_SEQ,by=list(obs$Date),FUN=length)
+ndate<-ndate[ndate$x<dim(siteLocation)[1],]
+dim(ndate)
+
+#########SITES to GeoJSON################################################################
+##########################################################################################
+imgCat<-obs[,c(1,3,7)]
+write.csv(imgCat,"data/imgCat.csv",row.names=FALSE)
+
+
+
+coordinates(siteLocation)=c("Xlong","Ylat")
+class(siteLocation)
+writeOGR(siteLocation,"data/sites.geojson",layer="siteLocation",driver="GeoJSON")
+
+########Identifying one daily image for each observation###################################
+##########################################################################################
+files<-read.csv("data/imgfiles2017_attributeinfo.csv",header=TRUE,stringsAsFactors=FALSE)
 colnames(files)[4]<-"STA_SEQ"
 
 data<-merge(files,obs,by=c("STA_SEQ","Month","Day","Year"))
@@ -47,10 +70,5 @@ check[check$x>1,]
 ##file.copy(test_data$pathtofile,'P:/Projects/GitHub_Prj/streamConnectViz/images')
 
 
-#########SITES to GeoJSON################################################################
-##########################################################################################
 
-colnames(siteLocation)<-c("STA_SEQ","Station_Name","Ylat","Xlong")
-coordinates(siteLocation)=c("Xlong","Ylat")
-class(siteLocation)
-writeOGR(siteLocation,"data/sites.geojson",layer="siteLocation",driver="GeoJSON")
+
