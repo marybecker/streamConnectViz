@@ -4,7 +4,20 @@ d3.json('data/sites.geojson').then(function(sites) {
 
     // add the jQuery slider
     $(function() {
-        $("#slider").slider();
+        d3.dsv(',','data/imgCat.csv').then(function(data) {
+            console.log(data.length);
+            let minDate = new Date(data[0].Date);
+            let maxDate = new Date(data[data.length-1].Date);
+
+            $( "#slider" ).slider({
+                min: minDate.getTime(),
+                max: maxDate.getTime(),
+                slide: function(event, ui) {
+                    let currentDate = new Date(ui.value);
+                    $('#date').text(currentDate.toDateString());
+                }
+            });
+        });
     });
 
     // load map and position
@@ -37,12 +50,15 @@ d3.json('data/sites.geojson').then(function(sites) {
     // display information of each site
     function onEachFeature(feature, layer) {
         // load the category data for each site
-        d3.dsv(',','data/imgCat.csv', function(d) {
-            console.log(d);
-
+        d3.dsv(',','data/imgCat.csv').then(function(data) {
             // display name of site
             let popup = feature.properties.Station_Name;
-            layer.bindPopup(popup)
+            layer.bindPopup(popup);
+
+            /*let myIcon = L.icon({
+                iconUrl: 'https://unpkg.com/leaflet@1.6.0/dist/images/marker-icon-2x.png';
+            }
+            L.marker({icon: myIcon}).addTo(map);*/
         });
     }
 
@@ -50,4 +66,5 @@ d3.json('data/sites.geojson').then(function(sites) {
         style: style,
         onEachFeature: onEachFeature
     }).addTo(map);
+
 });

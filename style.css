@@ -1,11 +1,11 @@
 body {
     background-color: #fefefe;
+    font-family: 'Arial', sans-serif;
 }
 
 h1 {
     color: #2c2b61;
     text-align: center;
-    font-family: 'Arial', sans-serif;
 }
 
 #mapid {
@@ -18,4 +18,9 @@ h1 {
     width: 98%;
     margin: 0 auto;
     border: 0.5px solid black;
+}
+
+#date {
+    text-align: center;
+    padding-top: 5px;
 }
