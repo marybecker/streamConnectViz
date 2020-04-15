@@ -1,8 +1,26 @@
-// load sites geojson file
-d3.json('data/sites.geojson').then(function(sites) {
-    console.log(sites);
-    d3.dsv(',','data/imgCat.csv').then(function(data) {
+d3.dsv(',','data/imgCat.csv', function(d) {
+    return {
+        seq: d.STA_SEQ,
+        date: d.Date,
+        cat: +d.Obs
+    };
+}).then(function(data) {
+    // load sites geojson file
+    d3.json('data/sites.geojson').then(function(sites) {
         console.log(data);
+        console.log(sites);
+
+        for(let j = 0; j < sites.features.length; j++) {
+            sites.features[j].properties.dates = {};
+        }
+        for(let i = 0; i < data.length; i++) {
+            for(let j = 0; j < sites.features.length; j++) {
+                // ----- join here -----
+                if(data[i].seq == sites.features[j].properties.STA_SEQ) {
+                    sites.features[j].properties.dates[data[i].date] = data[i].cat;
+                }
+            }
+        }
 
         // add the jQuery slider
         $(function() {
@@ -51,17 +69,6 @@ d3.json('data/sites.geojson').then(function(sites) {
             // display name of site
             let popup = feature.properties.Station_Name;
             layer.bindPopup("<h3>"+ popup + "</h3>");
-
-            /*function siteJoinCategory(feature, data) {
-                for(let i=0; i < sites.length; i++) {
-                    for(let i=0; i < data.length; i++) {
-                        if(feature.properties.STA_SEQ == data[i].STA_SEQ) {
-                            feature.properties.STA_SEQ = data[i].STA_SEQ;
-                        }
-                    }
-                }
-            }
-            console.log(siteJoinCategory());*/
 
             /*let myIcon = L.icon({
                 iconUrl: 'https://unpkg.com/leaflet@1.6.0/dist/images/marker-icon-2x.png';
