@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "sites",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "STA_SEQ": 15244, "Station_Name": "Cobble Brook" }, "geometry": { "type": "Point", "coordinates": [ -73.4572, 41.7217 ] } },
+{ "type": "Feature", "properties": { "STA_SEQ": 16046, "Station_Name": "Chidsey Brook" }, "geometry": { "type": "Point", "coordinates": [ -72.8624, 41.7848 ] } },
+{ "type": "Feature", "properties": { "STA_SEQ": 19657, "Station_Name": "Bunnell Brook" }, "geometry": { "type": "Point", "coordinates": [ -72.9646, 41.7863 ] } }
+]
+}
