@@ -1,3 +1,4 @@
+// load csv category data
 d3.dsv(',','data/imgCat.csv', function(d) {
     return {
         seq: d.STA_SEQ,
@@ -5,22 +6,10 @@ d3.dsv(',','data/imgCat.csv', function(d) {
         cat: +d.Obs
     };
 }).then(function(data) {
-    // load sites geojson file
+    // load sites from geojson file
     d3.json('data/sites.geojson').then(function(sites) {
         console.log(data);
         console.log(sites);
-
-        /*for(let j = 0; j < sites.features.length; j++) {
-            sites.features[j].properties.dates = {};
-        }
-        for(let i = 0; i < data.length; i++) {
-            for(let j = 0; j < sites.features.length; j++) {
-                // ----- join here -----
-                if(data[i].seq == sites.features[j].properties.STA_SEQ) {
-                    sites.features[j].properties.dates[data[i].date] = data[i].cat;
-                }
-            }
-        }*/
 
         // add the jQuery slider
         $(function() {
@@ -71,30 +60,25 @@ d3.dsv(',','data/imgCat.csv', function(d) {
 
             // combine csv dates and category data with each site
             for(let j = 0; j < sites.features.length; j++) {
-                sites.features[j].properties.dates = {};
+                sites.features[j].properties.categories = {};
             }
             for(let i = 0; i < data.length; i++) {
                 for(let j = 0; j < sites.features.length; j++) {
                     // ----- join here -----
                     if(data[i].seq == sites.features[j].properties.STA_SEQ) {
-                        sites.features[j].properties.dates[data[i].date] = data[i].cat;
+                        sites.features[j].properties.categories[data[i].date] = data[i].cat;
                     }
                 }
             }
 
             // attempt to match date from csv with current date on slider
-            for(let i = 0; i < data.length; i++) {
-                let getDate = new Date(data[i].date);
-                let newDate = getDate.toDateString();
+            for(let j = 0; j < sites.features.length; j++) {
+                let cats = sites.features[j].properties.categories;
 
                 // get current date of slider
-                $("#slider").bind("slidechange",function(event, ui) {
+                $("#slider").bind("slidechange", function (event, ui) {
                     let sliderDate = new Date(ui.value);
-                    //console.log(sliderDate.toDateString());
-
-                    if(sliderDate.toDateString() == newDate) {
-                        console.log('Date is ' + newDate);
-                    }
+                    console.log(sliderDate.toDateString());
                 });
             }
         }
@@ -103,5 +87,6 @@ d3.dsv(',','data/imgCat.csv', function(d) {
             style: style,
             onEachFeature: onEachFeature
         }).addTo(map);
+
     });
 });
