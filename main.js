@@ -1,12 +1,12 @@
-//create global variables
-cached_sites= null;
-cached_data= null;
+// create global variables
+cached_sites = null;
+cached_data = null;
 
 // load csv category data
 d3.dsv(',','data/imgCat.csv', function(d) {
     return {
         seq: d.STA_SEQ,
-        date: new Date(d.Date), //new Date()
+        date: new Date(d.Date).toDateString(), //new Date()
         cat: +d.Obs
     };
 }).then(function(data) {
@@ -38,7 +38,7 @@ d3.dsv(',','data/imgCat.csv', function(d) {
                 //create a key value pair in an array for each site
                 if(data[i].seq == sites.features[j].properties.STA_SEQ) {
                     if('samples' in sites.features[j].properties){
-                        var sample = {'date': data[i].date, 'category': data[i].cat};
+                        let sample = {'date': data[i].date, 'category': data[i].cat};
                         sites.features[j].properties.samples.push(sample);
                     } else {
                         sites.features[j].properties.samples = [{'date': data[i].date, 'category': data[i].cat}];
@@ -46,8 +46,6 @@ d3.dsv(',','data/imgCat.csv', function(d) {
                 }
             }
         }
-
-
 
         // load map and position
         let center = [41.5, -72.8];
@@ -61,7 +59,7 @@ d3.dsv(',','data/imgCat.csv', function(d) {
             id: 'mapbox/light-v9'
         }).addTo(map);
 
-        //Get colors for categories on map
+        // get colors for categories on map
         function getColor(d) {
             if(d == 1) {
                 return '#ffffcc';
@@ -69,18 +67,18 @@ d3.dsv(',','data/imgCat.csv', function(d) {
                 return '#c7e9b4';
             } else if(d == 3) {
                 return '#7fcdbb';
-            } else if (d==4){
+            } else if (d == 4){
                 return '#41b6c4';
-            } else if (d==5){
+            } else if (d == 5){
                 return '#2c7fb8';
-            } else if (d==6){
+            } else if (d == 6){
                 return '#253494';
             } else {
                 return '#d9d9d9'
             }
         }
 
-        //samples[0]  just for testing
+        // samples[0] just for testing
         function style(feature) {
             return {
                 color: '#1f78b4',
@@ -96,6 +94,7 @@ d3.dsv(',','data/imgCat.csv', function(d) {
                 return L.circleMarker(latlng,style);
             }
         }).addTo(map);*/
+
         // add data from geojson to map
         //L.geoJSON(sites, {style: style}).addTo(map);
 
@@ -104,36 +103,33 @@ d3.dsv(',','data/imgCat.csv', function(d) {
         // display information of each site
         function onEachFeature(feature, layer) {
             // display name of site
-            let popup = feature.properties.Station_Name;
-            let siteCat = feature.properties.samples[5].category;
-            let siteDate = feature.properties.samples[5].date;
-            layer.bindPopup("<h3>"+ popup + "</h3>" + "Date: "+siteDate+"<br>"+"Category: " + siteCat);
+            let siteName = feature.properties.Station_Name;
+            //let siteCat = feature.properties.samples[5].category;
+            //let siteDate = feature.properties.samples[5].date;
+            let siteCat;
+            let siteDate;
+            layer.bindPopup("<h3>"+ siteName + "</h3>" + "Date: " + siteDate + "<br>" + "Category: " + siteCat);
 
-            // // combine csv dates and category data with each site
-            // for(let j = 0; j < sites.features.length; j++) {
-            //     sites.features[j].properties.categories = {};
-            // }
-            // for(let i = 0; i < data.length; i++) {
-            //     for(let j = 0; j < sites.features.length; j++) {
-            //         // ----- join here -----
-            //         if(data[i].seq == sites.features[j].properties.STA_SEQ) {
-            //             sites.features[j].properties.categories[data[i].date] = data[i].cat;
-            //             //sites.features[j].properties.date = data[i].date;
-            //         }
-            //     }
-            // }
+            let getData = [];
 
-            // attempt to match date from csv with current date on slider
-            for(let j = 0; j < sites.features.length; j++) {
-                let cats = sites.features[j].properties.samples[1].category;
-                console.log(cats);
+            // get current date of slider
+            $("#slider").bind("slidechange", function (event, ui) {
+                let sliderDate = new Date(ui.value).toDateString();
+                console.log(sliderDate);
 
-                // get current date of slider
-                $("#slider").bind("slidechange", function (event, ui) {
-                    let sliderDate = new Date(ui.value);
-                    console.log(sliderDate.toDateString());
-                });
-            }
+                // attempt to match date from csv with current date on slider
+                for(let i = 0; i < sites.features.length; i++) {
+                    for(let j = 0; j < sites.features[i].properties.samples.length; j++) {
+                        let cat = sites.features[i].properties.samples[j].category;
+                        let date = sites.features[i].properties.samples[j].date;
+
+                        if(date == sliderDate) {
+                            getData.push(date, cat);
+                        }
+                    }
+                }
+                console.log(getData);
+            });
         }
 
         L.geoJSON (sites,{
@@ -143,8 +139,6 @@ d3.dsv(',','data/imgCat.csv', function(d) {
             style:style,
             onEachFeature: onEachFeature
         }).addTo(map);
-
-
 
     });
 });
